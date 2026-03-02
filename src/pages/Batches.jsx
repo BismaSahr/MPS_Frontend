@@ -6,7 +6,7 @@ import BatchModal from "../components/BatchModal";
 import DeleteConfirm from "../components/DeleteConfirm";
 import "./Batches.css";
 
-const EMPTY_FORM = { productId: "", batchNumber: "", manufactureDate: "", expiryDate: "" };
+const EMPTY_FORM = { productId: "", batchNumber: "", manufactureDate: "", expiryDate: "", quantity: "" };
 
 const toInputDate = (d) => (d ? new Date(d).toISOString().split("T")[0] : "");
 
@@ -15,6 +15,7 @@ const payloadToForm = (b) => ({
     batchNumber: b.batchNumber || "",
     manufactureDate: toInputDate(b.manufactureDate),
     expiryDate: toInputDate(b.expiryDate),
+    quantity: b.quantity || "",
 });
 
 const formatDate = (d) => {
@@ -193,6 +194,7 @@ const Batches = () => {
                                 <th className="pm-th">#</th>
                                 <th className="pm-th">Product</th>
                                 <th className="pm-th">Batch No.</th>
+                                <th className="pm-th">Quantity</th>
                                 <th className="pm-th pm-th--hide-sm">Mfg. Date</th>
                                 <th className="pm-th">Expiry Date</th>
                                 <th className="pm-th pm-th--hide-sm">Status</th>
@@ -211,6 +213,9 @@ const Batches = () => {
                                         </td>
                                         <td className="pm-td">
                                             <code className="pm-slug">{b.batchNumber}</code>
+                                        </td>
+                                        <td className="pm-td">
+                                            <span className="pm-badge">{b.quantity}</span>
                                         </td>
                                         <td className="pm-td pm-td--hide-sm">{formatDate(b.manufactureDate)}</td>
                                         <td className="pm-td">

@@ -73,7 +73,7 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
                             </div>
 
                             {/* Batch Number */}
-                            <div className="form-field form-field--full">
+                            <div className="form-field">
                                 <label className="form-label">Batch Number <span className="req">*</span></label>
                                 <input
                                     type="text"
@@ -82,6 +82,21 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
                                     onChange={handleChange}
                                     placeholder="e.g. MPS-2024-001"
                                     className="form-input"
+                                    required
+                                />
+                            </div>
+
+                            {/* Quantity */}
+                            <div className="form-field">
+                                <label className="form-label">Quantity <span className="req">*</span></label>
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    value={form.quantity}
+                                    onChange={handleChange}
+                                    placeholder="e.g. 500"
+                                    className="form-input"
+                                    min="1"
                                     required
                                 />
                             </div>

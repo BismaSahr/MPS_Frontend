@@ -11,12 +11,12 @@ import DeleteConfirm from "../components/DeleteConfirm";
 import "./Products.css";
 
 const EMPTY_FORM = {
-    name: "", slug: "", description: "", storage: "", packaging: "", images: "",
+    name: "", slug: "", description: "", storage: "", packaging: "", images: [],
 };
 
 const formToPayload = (form) => ({
     ...form,
-    images: form.images.split("\n").map((s) => s.trim()).filter(Boolean),
+    images: Array.isArray(form.images) ? form.images.map((s) => s.trim()).filter(Boolean) : [],
 });
 
 const payloadToForm = (p) => ({
@@ -25,7 +25,7 @@ const payloadToForm = (p) => ({
     description: p.description || "",
     storage: p.storage || "",
     packaging: p.packaging || "",
-    images: Array.isArray(p.images) ? p.images.join("\n") : "",
+    images: Array.isArray(p.images) ? [...p.images] : [],
 });
 
 const Products = () => {

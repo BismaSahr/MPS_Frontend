@@ -59,9 +59,9 @@ function App() {
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-          {/* Unprotected for testing — re-add ProtectedRoute wrapper when backend is ready */}
-          <Route path="/products" element={<Products />} />
-          <Route path="/batches" element={<Batches />} />
+          {/* Protected administrative routes */}
+          <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+          <Route path="/batches" element={<ProtectedRoute><Batches /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

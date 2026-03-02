@@ -145,18 +145,81 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                 />
                             </div>
 
-                            {/* Images */}
+                            {/* Images Management */}
                             <div className="form-field form-field--full">
-                                <label className="form-label">Image URLs</label>
-                                <textarea
-                                    name="images"
-                                    value={form.images}
-                                    onChange={handleChange}
-                                    placeholder="Enter image URLs, one per line&#10;https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-                                    className="form-textarea"
-                                    rows={3}
-                                />
-                                <span className="form-hint">One URL per line</span>
+                                <label className="form-label">Product Images</label>
+
+                                <div className="image-manager">
+                                    <div className="image-previews">
+                                        {Array.isArray(form.images) && form.images.map((url, idx) => (
+                                            <div key={idx} className="image-preview-item">
+                                                <img src={url} alt={`Preview ${idx + 1}`} />
+                                                <button
+                                                    type="button"
+                                                    className="image-remove-btn"
+                                                    onClick={() => {
+                                                        const next = [...form.images];
+                                                        next.splice(idx, 1);
+                                                        setForm(p => ({ ...p, images: next }));
+                                                    }}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        ))}
+
+                                        <div className="image-add-options">
+                                            <label className="image-upload-box" title="Upload local image">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    multiple
+                                                    onChange={(e) => {
+                                                        const files = Array.from(e.target.files);
+                                                        files.forEach(file => {
+                                                            const reader = new FileReader();
+                                                            reader.onloadend = () => {
+                                                                setForm(p => ({
+                                                                    ...p,
+                                                                    images: [...p.images, reader.result]
+                                                                }));
+                                                            };
+                                                            reader.readAsDataURL(file);
+                                                        });
+                                                        e.target.value = null;
+                                                    }}
+                                                />
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                                    <polyline points="17 8 12 3 7 8" />
+                                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                                </svg>
+                                                <span>Upload</span>
+                                            </label>
+
+                                            <button
+                                                type="button"
+                                                className="image-url-btn"
+                                                title="Add image via URL"
+                                                onClick={() => {
+                                                    const url = prompt("Enter Image URL:");
+                                                    if (url && url.trim()) {
+                                                        setForm(p => ({ ...p, images: [...p.images, url.trim()] }));
+                                                    }
+                                                }}
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+                                                    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+                                                </svg>
+                                                <span>URL</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span className="form-hint">JPG/PNG supported. For better performance, use optimized images.</span>
+                                </div>
                             </div>
                         </div>
                     </form>
