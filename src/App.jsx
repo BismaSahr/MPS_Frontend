@@ -1,44 +1,50 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLayout from "./components/AdminLayout";
 import Login from "./pages/Login";
+import Products from "./pages/Products";
+import Batches from "./pages/Batches";
 import "./index.css";
 
-// Placeholder Dashboard — replace with your real dashboard component later
+// Dashboard placeholder
 const Dashboard = () => {
-  const { logout, admin } = useAuth();
+  const { admin } = useAuth();
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#060e1f",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      gap: "1.5rem",
-      fontFamily: "Inter, sans-serif",
-      color: "#e8f4ff"
-    }}>
-      <h1 style={{ fontSize: "2rem", fontWeight: 700 }}>✅ Dashboard</h1>
-      <p style={{ color: "rgba(255,255,255,0.5)" }}>
-        Welcome{admin?.name ? `, ${admin.name}` : ""}! You are authenticated.
-      </p>
-      <button
-        onClick={logout}
-        style={{
-          padding: "0.75rem 2rem",
-          background: "linear-gradient(135deg, #0d47a1, #00c9ff)",
-          border: "none",
-          borderRadius: "12px",
-          color: "#fff",
-          fontWeight: 600,
-          cursor: "pointer",
-          fontSize: "0.95rem"
-        }}
-      >
-        Sign Out
-      </button>
-    </div>
+    <AdminLayout>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", padding: "1rem 0" }}>
+        <div>
+          <h2 style={{ fontFamily: "Outfit,sans-serif", fontSize: "1.5rem", fontWeight: 700, color: "#fff", margin: "0 0 0.35rem" }}>
+            👋 Welcome back, {admin?.name || "Admin"}
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.4)", margin: 0, fontSize: "0.9rem" }}>
+            What would you like to manage today?
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          {[
+            { to: "/products", label: "Manage Products", icon: "📦" },
+            { to: "/batches", label: "Manage Batches", icon: "🧪" },
+          ].map(({ to, label, icon }) => (
+            <Link key={to} to={to} style={{
+              display: "flex", alignItems: "center", gap: "0.65rem",
+              padding: "1rem 1.5rem",
+              background: "rgba(0,201,255,0.07)",
+              border: "1px solid rgba(0,201,255,0.18)",
+              borderRadius: "14px",
+              color: "#00c9ff", fontWeight: 600, textDecoration: "none",
+              fontSize: "0.95rem", transition: "background 0.2s, transform 0.2s",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,201,255,0.14)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(0,201,255,0.07)"; e.currentTarget.style.transform = "translateY(0)"; }}
+            >
+              <span style={{ fontSize: "1.3rem" }}>{icon}</span>
+              {label} →
+            </Link>
+          ))}
+        </div>
+      </div>
+    </AdminLayout>
   );
 };
 
@@ -49,15 +55,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          {/* Catch-all → login */}
+
+          {/* Protected routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+          {/* Unprotected for testing — re-add ProtectedRoute wrapper when backend is ready */}
+          <Route path="/products" element={<Products />} />
+          <Route path="/batches" element={<Batches />} />
+
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>

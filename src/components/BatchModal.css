@@ -1,0 +1,50 @@
+/* =============================================
+   BATCH MODAL extras — date inputs & select
+   ============================================= */
+
+.form-select {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #e8f4ff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.35)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}
+
+.form-select option {
+    background: #0b1628;
+    color: #e8f4ff;
+}
+
+.form-select:focus {
+    border-color: rgba(0, 201, 255, 0.5);
+    background-color: rgba(0, 201, 255, 0.04);
+    box-shadow: 0 0 0 3px rgba(0, 201, 255, 0.1);
+}
+
+/* Date input styling */
+.form-input--date {
+    color-scheme: dark;
+}
+
+.form-input--date::-webkit-calendar-picker-indicator {
+    filter: invert(0.7) sepia(1) saturate(3) hue-rotate(180deg);
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.form-input--date::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}

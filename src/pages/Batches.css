@@ -1,0 +1,57 @@
+/* Batches page — extends Products.css shared styles */
+
+/* Batch status badges */
+.batch-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.batch-status--ok {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.batch-status--soon {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fde68a;
+}
+
+.batch-status--expired {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.batch-status--none {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Expiry date coloring */
+.batch-date--expired {
+    color: #fca5a5;
+    font-weight: 600;
+}
+
+.batch-date--soon {
+    color: #fde68a;
+    font-weight: 600;
+}
+
+/* Stat value coloring */
+.batch-stat--warn {
+    color: #fde68a !important;
+}
+
+.batch-stat--danger {
+    color: #fca5a5 !important;
+}
