@@ -46,9 +46,11 @@ const COAs = () => {
         setFetchError("");
         try {
             const [c, b] = await Promise.all([getCOAs(), getBatches()]);
-            setCoas(c);
-            setBatches(b);
-        } catch {
+            // Defensive checks in case backend returns unexpected format
+            setCoas(Array.isArray(c) ? c : []);
+            setBatches(Array.isArray(b) ? b : []);
+        } catch (err) {
+            console.error("COA Load Error:", err);
             setFetchError("Failed to load COAs. Check your backend connection.");
         } finally {
             setFetching(false);
@@ -57,7 +59,7 @@ const COAs = () => {
 
     useEffect(() => { load(); }, [load]);
 
-    const filtered = coas.filter(
+    const filtered = (Array.isArray(coas) ? coas : []).filter(
         (c) =>
             c.labName?.toLowerCase().includes(search.toLowerCase()) ||
             c.batchId?.batchNumber?.toLowerCase().includes(search.toLowerCase())
@@ -142,7 +144,9 @@ const COAs = () => {
                 </div>
                 <div className="pm-stat">
                     <span className="pm-stat-val batch-stat--ok">
-                        {batches.filter(b => coas.some(c => (c.batchId?._id || c.batchId) === b._id)).length}
+                        {Array.isArray(batches) && Array.isArray(coas)
+                            ? batches.filter(b => coas.some(c => (c.batchId?._id || c.batchId) === b._id)).length
+                            : 0}
                     </span>
                     <span className="pm-stat-label">Batches with COA</span>
                 </div>
