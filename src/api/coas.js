@@ -1,41 +1,29 @@
 import axios from "axios";
 
-const API_URL = "/api/coas";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// Get auth header
-const getAuthHeader = () => {
-    const token = localStorage.getItem("adminToken");
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
+const authHeader = () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem("mps_token")}` },
+});
 
-export const getCOAs = async () => {
-    const res = await axios.get(API_URL);
-    return res.data;
-};
+export const getCOAs = () =>
+    axios.get(`${API_BASE}/api/coas`, authHeader()).then((r) => r.data);
 
-export const createCOA = async (formData) => {
-    const res = await axios.post(API_URL, formData, {
+export const createCOA = (formData) =>
+    axios.post(`${API_BASE}/api/coas`, formData, {
         headers: {
-            ...getAuthHeader(),
+            ...authHeader().headers,
             "Content-Type": "multipart/form-data",
         },
-    });
-    return res.data;
-};
+    }).then((r) => r.data);
 
-export const updateCOA = async (id, formData) => {
-    const res = await axios.put(`${API_URL}/${id}`, formData, {
+export const updateCOA = (id, formData) =>
+    axios.put(`${API_BASE}/api/coas/${id}`, formData, {
         headers: {
-            ...getAuthHeader(),
+            ...authHeader().headers,
             "Content-Type": "multipart/form-data",
         },
-    });
-    return res.data;
-};
+    }).then((r) => r.data);
 
-export const deleteCOA = async (id) => {
-    const res = await axios.delete(`${API_URL}/${id}`, {
-        headers: getAuthHeader(),
-    });
-    return res.data;
-};
+export const deleteCOA = (id) =>
+    axios.delete(`${API_BASE}/api/coas/${id}`, authHeader()).then((r) => r.data);
