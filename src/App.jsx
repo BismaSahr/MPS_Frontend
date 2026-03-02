@@ -5,6 +5,7 @@ import AdminLayout from "./components/AdminLayout";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import COAs from "./pages/COAs";
+import QRCodes from "./pages/QRCodes";
 import Batches from "./pages/Batches";
 import "./index.css";
 
@@ -64,6 +65,7 @@ function App() {
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/batches" element={<ProtectedRoute><Batches /></ProtectedRoute>} />
           <Route path="/coas" element={<ProtectedRoute><COAs /></ProtectedRoute>} />
+          <Route path="/qrcodes" element={<ProtectedRoute><QRCodes /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
