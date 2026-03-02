@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
+import COAs from "./pages/COAs";
 import Batches from "./pages/Batches";
 import "./index.css";
 
@@ -62,6 +63,7 @@ function App() {
           {/* Protected administrative routes */}
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/batches" element={<ProtectedRoute><Batches /></ProtectedRoute>} />
+          <Route path="/coas" element={<ProtectedRoute><COAs /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
