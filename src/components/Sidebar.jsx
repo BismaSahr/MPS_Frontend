@@ -66,14 +66,22 @@ const NAV_ITEMS = [
     },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
     const { logout, admin } = useAuth();
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar${isOpen ? " sidebar--open" : ""}`}>
             {/* Logo */}
-            <div className="sidebar-logo">
-                <img src={logo} alt="Miami Pro Science" />
+            <div className="sidebar-header">
+                <div className="sidebar-logo">
+                    <img src={logo} alt="Miami Pro Science" />
+                </div>
+                <button className="sidebar-close" onClick={onClose} title="Close Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
             </div>
 
             {/* Nav label */}
@@ -85,6 +93,7 @@ const Sidebar = () => {
                     <NavLink
                         key={to}
                         to={to}
+                        onClick={onClose}
                         className={({ isActive }) =>
                             `sidebar-nav-item${isActive ? " sidebar-nav-item--active" : ""}`
                         }
@@ -107,7 +116,7 @@ const Sidebar = () => {
                     </div>
                 </div>
                 <button className="sidebar-logout" onClick={logout} title="Sign out">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
                         <polyline points="16 17 21 12 16 7" />
                         <line x1="21" y1="12" x2="9" y2="12" />
