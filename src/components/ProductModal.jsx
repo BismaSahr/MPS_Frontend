@@ -180,24 +180,32 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
 
                                 <div className="image-manager">
                                     <div className="image-previews">
-                                        {Array.isArray(form.images) && form.images.map((url, idx) => (
-                                            <div key={idx} className="image-preview-item">
-                                                <img src={url} alt={`Preview ${idx + 1}`} />
-                                                <button
-                                                    type="button"
-                                                    className="image-remove-btn"
-                                                    onClick={() => {
-                                                        const next = [...form.images];
-                                                        next.splice(idx, 1);
-                                                        setForm(p => ({ ...p, images: next }));
-                                                    }}
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        ))}
+                                        {Array.isArray(form.images) && form.images.map((img, idx) => {
+                                            const isFile = img instanceof File;
+                                            const previewUrl = isFile ? URL.createObjectURL(img) : img;
+                                            return (
+                                                <div key={idx} className="image-preview-item">
+                                                    <img
+                                                        src={previewUrl}
+                                                        alt={`Preview ${idx + 1}`}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="image-remove-btn"
+                                                        onClick={() => {
+                                                            const next = [...form.images];
+                                                            next.splice(idx, 1);
+                                                            setForm(p => ({ ...p, images: next }));
+                                                            if (isFile) URL.revokeObjectURL(previewUrl);
+                                                        }}
+                                                    >
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
 
                                         <div className="image-add-options">
                                             <label className="image-upload-box" title="Upload local image">
@@ -207,16 +215,12 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                                     multiple
                                                     onChange={(e) => {
                                                         const files = Array.from(e.target.files);
-                                                        files.forEach(file => {
-                                                            const reader = new FileReader();
-                                                            reader.onloadend = () => {
-                                                                setForm(p => ({
-                                                                    ...p,
-                                                                    images: [...p.images, reader.result]
-                                                                }));
-                                                            };
-                                                            reader.readAsDataURL(file);
-                                                        });
+                                                        if (files.length > 0) {
+                                                            setForm(p => ({
+                                                                ...p,
+                                                                images: [...p.images, ...files]
+                                                            }));
+                                                        }
                                                         e.target.value = null;
                                                         if (errors.images) setErrors(prev => ({ ...prev, images: "" }));
                                                     }}
@@ -229,7 +233,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                                 <span>Upload</span>
                                             </label>
 
-                                            <button
+                                            {/* <button
                                                 type="button"
                                                 className="image-url-btn"
                                                 title="Add image via URL"
@@ -246,7 +250,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                                     <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
                                                 </svg>
                                                 <span>URL</span>
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </div>
                                     {errors.images && <span className="error-text">{errors.images}</span>}

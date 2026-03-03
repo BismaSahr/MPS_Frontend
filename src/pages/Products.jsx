@@ -15,10 +15,24 @@ const EMPTY_FORM = {
     name: "", slug: "", description: "", storage: "", packaging: "", images: [],
 };
 
-const formToPayload = (form) => ({
-    ...form,
-    images: Array.isArray(form.images) ? form.images.map((s) => s.trim()).filter(Boolean) : [],
-});
+const formToPayload = (form) => {
+    const fd = new FormData();
+    fd.append("name", form.name || "");
+    fd.append("slug", form.slug || "");
+    fd.append("description", form.description || "");
+    fd.append("storage", form.storage || "");
+    fd.append("packaging", form.packaging || "");
+
+    // Append images
+    if (Array.isArray(form.images)) {
+        form.images.forEach((img) => {
+            // If it's a File object from upload-box, it goes as binary
+            // If it's a string from URL-btn or existing DB, it goes as string
+            fd.append("images", img);
+        });
+    }
+    return fd;
+};
 
 const payloadToForm = (p) => ({
     name: p.name || "",
