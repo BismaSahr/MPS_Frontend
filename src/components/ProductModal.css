@@ -179,6 +179,31 @@
     box-sizing: border-box;
 }
 
+.form-input--error,
+.form-textarea--error {
+    border-color: #ef4444 !important;
+    background: #fffafa !important;
+}
+
+.form-input--error:focus,
+.form-textarea--error:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.error-text::before {
+    content: "⚠";
+}
+
 .form-input::placeholder,
 .form-textarea::placeholder {
     color: #94a3b8;

@@ -4,16 +4,35 @@ import "./ProductModal.css";
 const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
     const [filePreview, setFilePreview] = useState(null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         firstRef.current?.focus();
-    }, []);
+        setErrors({});
+    }, [mode]);
+
+    const validate = () => {
+        const newErrors = {};
+        if (!form.batchId) newErrors.batchId = "Please select an associated batch";
+        if (mode === "create" && !form.file) newErrors.file = "COA document file is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            onSubmit(e);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (name === "file") {
             const file = files[0];
             setForm((p) => ({ ...p, file }));
+            if (errors.file) setErrors(prev => ({ ...prev, file: "" }));
             if (file) {
                 // If image, show preview. If PDF, just show name.
                 if (file.type.startsWith("image/")) {
@@ -26,6 +45,7 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
             }
         } else {
             setForm((p) => ({ ...p, [name]: value }));
+            if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
         }
     };
 
@@ -59,9 +79,8 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
                     </button>
                 </div>
 
-                {/* Body */}
                 <div className="modal-body">
-                    <form id="coa-form" onSubmit={onSubmit} className="product-form">
+                    <form id="coa-form" onSubmit={handleFormSubmit} className="product-form" noValidate>
                         <div className="form-grid">
                             {/* Batch Selection */}
                             <div className="form-field form-field--full">
@@ -71,8 +90,7 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
                                     name="batchId"
                                     value={form.batchId}
                                     onChange={handleChange}
-                                    className="form-select"
-                                    required
+                                    className={`form-select ${errors.batchId ? "form-input--error" : ""}`}
                                 >
                                     <option value="">— Select a batch —</option>
                                     {batches.map((b) => {
@@ -84,6 +102,7 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
                                         );
                                     })}
                                 </select>
+                                {errors.batchId && <span className="error-text">{errors.batchId}</span>}
                             </div>
 
                             {/* Lab Name */}
@@ -141,6 +160,7 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
                                     </div>
                                     <span className="form-hint">Upload the original testing document. PDFs are recommended.</span>
                                 </div>
+                                {errors.file && <span className="error-text">{errors.file}</span>}
                             </div>
                         </div>
                     </form>

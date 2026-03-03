@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./ProductModal.css"; /* reuse same modal base styles */
 import "./BatchModal.css";
 
@@ -11,11 +11,34 @@ const EMPTY = {
 
 const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
+    const [errors, setErrors] = useState({});
 
-    useEffect(() => { firstRef.current?.focus(); }, []);
+    useEffect(() => {
+        firstRef.current?.focus();
+        setErrors({});
+    }, [mode]);
+
+    const validate = () => {
+        const newErrors = {};
+        if (!form.productId) newErrors.productId = "Please select a product";
+        if (!form.batchNumber?.trim()) newErrors.batchNumber = "Batch number is required";
+        if (!form.quantity || form.quantity <= 0) newErrors.quantity = "A valid quantity is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            onSubmit(e);
+        }
+    };
 
     const handleChange = (e) => {
-        setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setForm((p) => ({ ...p, [name]: value }));
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
     };
 
     const handleBackdrop = (e) => { if (e.target === e.currentTarget) onClose(); };
@@ -51,7 +74,7 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
 
                 {/* Body */}
                 <div className="modal-body">
-                    <form id="batch-form" onSubmit={onSubmit} className="product-form">
+                    <form id="batch-form" onSubmit={handleFormSubmit} className="product-form" noValidate>
                         <div className="form-grid">
 
                             {/* Product */}
@@ -62,14 +85,14 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
                                     name="productId"
                                     value={form.productId}
                                     onChange={handleChange}
-                                    className="form-select"
-                                    required
+                                    className={`form-select ${errors.productId ? "form-input--error" : ""}`}
                                 >
                                     <option value="">— Select a product —</option>
                                     {products.map((p) => (
                                         <option key={p._id} value={p._id}>{p.name}</option>
                                     ))}
                                 </select>
+                                {errors.productId && <span className="error-text">{errors.productId}</span>}
                             </div>
 
                             {/* Batch Number */}
@@ -81,9 +104,9 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
                                     value={form.batchNumber}
                                     onChange={handleChange}
                                     placeholder="e.g. MPS-2024-001"
-                                    className="form-input"
-                                    required
+                                    className={`form-input ${errors.batchNumber ? "form-input--error" : ""}`}
                                 />
+                                {errors.batchNumber && <span className="error-text">{errors.batchNumber}</span>}
                             </div>
 
                             {/* Quantity */}
@@ -95,10 +118,10 @@ const BatchModal = ({ mode, form, setForm, products, onClose, onSubmit, loading 
                                     value={form.quantity}
                                     onChange={handleChange}
                                     placeholder="e.g. 500"
-                                    className="form-input"
+                                    className={`form-input ${errors.quantity ? "form-input--error" : ""}`}
                                     min="1"
-                                    required
                                 />
+                                {errors.quantity && <span className="error-text">{errors.quantity}</span>}
                             </div>
 
                             {/* Manufacture Date */}

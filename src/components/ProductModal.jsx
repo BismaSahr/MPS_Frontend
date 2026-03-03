@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./ProductModal.css";
 
 const EMPTY = {
@@ -12,11 +12,36 @@ const EMPTY = {
 
 const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
+    const [errors, setErrors] = useState({});
 
     // Focus first field on open
     useEffect(() => {
         firstRef.current?.focus();
-    }, []);
+        setErrors({});
+    }, [mode, product]);
+
+    const validate = () => {
+        const newErrors = {};
+        if (!form.name?.trim()) newErrors.name = "Product name is required";
+        if (!form.slug?.trim()) {
+            newErrors.slug = "Slug is required";
+        } else if (!/^[a-z0-9-]+$/.test(form.slug)) {
+            newErrors.slug = "Slug can only contain lowercase letters, numbers, and hyphens";
+        }
+        if (!form.images || form.images.length === 0) {
+            newErrors.images = "At least one product image is required";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            onSubmit(e);
+        }
+    };
 
     // Auto-generate slug from name
     const handleNameChange = (e) => {
@@ -27,10 +52,14 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
             .replace(/[^a-z0-9\s-]/g, "")
             .replace(/\s+/g, "-");
         setForm((p) => ({ ...p, name, slug }));
+        if (errors.name) setErrors(prev => ({ ...prev, name: "" }));
+        if (errors.slug) setErrors(prev => ({ ...prev, slug: "" }));
     };
 
     const handleChange = (e) => {
-        setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setForm((p) => ({ ...p, [name]: value }));
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
     };
 
     const handleBackdrop = (e) => {
@@ -74,7 +103,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
 
                 {/* Body */}
                 <div className="modal-body">
-                    <form id="product-form" onSubmit={onSubmit} className="product-form">
+                    <form id="product-form" onSubmit={handleFormSubmit} className="product-form" noValidate>
                         <div className="form-grid">
                             {/* Name */}
                             <div className="form-field">
@@ -86,9 +115,9 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                     value={form.name}
                                     onChange={handleNameChange}
                                     placeholder="e.g. MPS Lab Reagent Pro"
-                                    className="form-input"
-                                    required
+                                    className={`form-input ${errors.name ? "form-input--error" : ""}`}
                                 />
+                                {errors.name && <span className="error-text">{errors.name}</span>}
                             </div>
 
                             {/* Slug */}
@@ -100,9 +129,9 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                     value={form.slug}
                                     onChange={handleChange}
                                     placeholder="e.g. mps-lab-reagent-pro"
-                                    className="form-input"
-                                    required
+                                    className={`form-input ${errors.slug ? "form-input--error" : ""}`}
                                 />
+                                {errors.slug && <span className="error-text">{errors.slug}</span>}
                                 <span className="form-hint">Auto-generated from name, or customize</span>
                             </div>
 
@@ -189,6 +218,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                                             reader.readAsDataURL(file);
                                                         });
                                                         e.target.value = null;
+                                                        if (errors.images) setErrors(prev => ({ ...prev, images: "" }));
                                                     }}
                                                 />
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -207,6 +237,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                                     const url = prompt("Enter Image URL:");
                                                     if (url && url.trim()) {
                                                         setForm(p => ({ ...p, images: [...p.images, url.trim()] }));
+                                                        if (errors.images) setErrors(prev => ({ ...prev, images: "" }));
                                                     }
                                                 }}
                                             >
@@ -218,6 +249,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                             </button>
                                         </div>
                                     </div>
+                                    {errors.images && <span className="error-text">{errors.images}</span>}
                                     <span className="form-hint">JPG/PNG supported. For better performance, use optimized images.</span>
                                 </div>
                             </div>
