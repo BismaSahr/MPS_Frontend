@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { getQRCodes, generateQRCodes, deleteQRCode, exportQRCodes } from "../api/qrcodes";
 import { getBatches } from "../api/batches";
+import { getProducts } from "../api/products";
 import { getCOAs } from "../api/coas";
 import AdminLayout from "../components/AdminLayout";
 import QRGenerateModal from "../components/QRGenerateModal";
@@ -11,6 +12,7 @@ import "./Products.css";
 const QRCodes = () => {
     const [qrs, setQrs] = useState([]);
     const [batches, setBatches] = useState([]);
+    const [products, setProducts] = useState([]);
     const [coas, setCoas] = useState([]);
     const [fetching, setFetching] = useState(true);
     const [search, setSearch] = useState("");
@@ -30,10 +32,11 @@ const QRCodes = () => {
     const load = useCallback(async () => {
         setFetching(true);
         try {
-            const [q, b, c] = await Promise.all([getQRCodes(), getBatches(), getCOAs()]);
+            const [q, b, c, p] = await Promise.all([getQRCodes(), getBatches(), getCOAs(), getProducts()]);
             setQrs(Array.isArray(q) ? q : []);
             setBatches(Array.isArray(b) ? b : []);
             setCoas(Array.isArray(c) ? c : []);
+            setProducts(Array.isArray(p) ? p : []);
         } catch (err) {
             console.error("QR Load Error:", err);
             showToast("Failed to load data.", "error");
@@ -43,6 +46,13 @@ const QRCodes = () => {
     }, []);
 
     useEffect(() => { load(); }, [load]);
+
+    const productName = useCallback((idOrObj) => {
+        if (!idOrObj) return "Unknown";
+        if (typeof idOrObj === 'object' && idOrObj.name) return idOrObj.name;
+        const id = typeof idOrObj === 'object' ? idOrObj._id : idOrObj;
+        return products.find(p => p._id === id)?.name || "Unknown";
+    }, [products]);
 
     // Grouping QR codes by batch for the modal
     const batchDataMap = useMemo(() => {
@@ -62,9 +72,9 @@ const QRCodes = () => {
             .filter(b => generatedIds.has(b._id))
             .filter(b =>
                 b.batchNumber?.toLowerCase().includes(search.toLowerCase()) ||
-                b.productId?.name?.toLowerCase().includes(search.toLowerCase())
+                productName(b.productId).toLowerCase().includes(search.toLowerCase())
             );
-    }, [batches, batchDataMap, search]);
+    }, [batches, batchDataMap, search, productName]);
 
     const handleGenerate = async (batchId) => {
         setGenerating(true);
@@ -169,7 +179,7 @@ const QRCodes = () => {
                                 return (
                                     <tr key={b._id} className="pm-tr">
                                         <td className="pm-td">
-                                            <div className="pm-product-name">{b.productId?.name || "Unknown"}</div>
+                                            <div className="pm-product-name">{productName(b.productId)}</div>
                                         </td>
                                         <td className="pm-td">
                                             <code className="pm-badge">{b.batchNumber}</code>

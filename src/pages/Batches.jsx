@@ -256,7 +256,7 @@ const Batches = () => {
             )}
 
             {modal && <BatchModal mode={modal} form={form} setForm={setForm} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
-            {previewTarget && <BatchPreviewModal batch={previewTarget} onClose={() => setPreviewTarget(null)} />}
+            {previewTarget && <BatchPreviewModal batch={previewTarget} productName={productName(previewTarget.productId)} onClose={() => setPreviewTarget(null)} />}
             {deleteTarget && <DeleteConfirm productName={`Batch ${deleteTarget.batchNumber}`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
         </AdminLayout>

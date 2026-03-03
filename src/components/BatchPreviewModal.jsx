@@ -1,7 +1,7 @@
 import React from "react";
 import "./BatchPreviewModal.css";
 
-const BatchPreviewModal = ({ batch, onClose }) => {
+const BatchPreviewModal = ({ batch, productName, onClose }) => {
     if (!batch) return null;
 
     const formatDate = (d) => {
@@ -43,7 +43,7 @@ const BatchPreviewModal = ({ batch, onClose }) => {
 
                         <div className="info-group">
                             <label className="info-label">Product</label>
-                            <div className="info-value name-val">{batch.productId?.name || "Unknown Product"}</div>
+                            <div className="info-value name-val">{productName || batch.productId?.name || "Unknown Product"}</div>
                         </div>
 
                         <div className="info-grid-small">
