@@ -255,7 +255,15 @@ const Batches = () => {
                 </div>
             )}
 
-            {modal && <BatchModal mode={modal} form={form} setForm={setForm} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
+            {modal && (() => {
+                const hasBatch = (pId) => (batches || []).some(b => (b.productId?._id || b.productId) === pId);
+                const availableProducts = (products || []).filter(p => {
+                    if (modal === "create") return !hasBatch(p._id);
+                    // In edit mode, allow the current product + others without batch
+                    return !hasBatch(p._id) || p._id === editTarget?.productId?._id || p._id === editTarget?.productId;
+                });
+                return <BatchModal mode={modal} form={form} setForm={setForm} products={availableProducts} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />;
+            })()}
             {previewTarget && <BatchPreviewModal batch={previewTarget} productName={productName(previewTarget.productId)} onClose={() => setPreviewTarget(null)} />}
             {deleteTarget && <DeleteConfirm productName={`Batch ${deleteTarget.batchNumber}`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
