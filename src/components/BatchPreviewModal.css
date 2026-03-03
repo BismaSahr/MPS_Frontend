@@ -1,0 +1,28 @@
+.batch-preview-panel {
+    max-width: 500px;
+    width: 95%;
+}
+
+.batch-preview-body {
+    padding: 2rem;
+}
+
+.batch-preview-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.preview-divider {
+    border: 0;
+    border-top: 1px solid #f1f5f9;
+    margin: 0.5rem 0;
+}
+
+.batch-preview-panel .info-label {
+    margin-bottom: 0.5rem;
+}
+
+.batch-preview-panel .info-value {
+    color: var(--text-primary);
+}

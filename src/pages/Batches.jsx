@@ -3,6 +3,7 @@ import { getBatches, createBatch, updateBatch, deleteBatch } from "../api/batche
 import { getProducts } from "../api/products";
 import AdminLayout from "../components/AdminLayout";
 import BatchModal from "../components/BatchModal";
+import BatchPreviewModal from "../components/BatchPreviewModal";
 import DeleteConfirm from "../components/DeleteConfirm";
 import "./Batches.css";
 
@@ -43,6 +44,7 @@ const Batches = () => {
     const [submitting, setSubmitting] = useState(false);
 
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [previewTarget, setPreviewTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
     const [toast, setToast] = useState(null);
@@ -236,6 +238,7 @@ const Batches = () => {
                                         </td>
                                         <td className="pm-td pm-td--right">
                                             <div className="pm-actions">
+                                                <button className="pm-action-btn pm-action-btn--edit" onClick={() => setPreviewTarget(b)} title="Preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></button>
                                                 <button className="pm-action-btn pm-action-btn--edit" onClick={() => openEdit(b)} title="Edit">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                                 </button>
@@ -253,6 +256,7 @@ const Batches = () => {
             )}
 
             {modal && <BatchModal mode={modal} form={form} setForm={setForm} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
+            {previewTarget && <BatchPreviewModal batch={previewTarget} onClose={() => setPreviewTarget(null)} />}
             {deleteTarget && <DeleteConfirm productName={`Batch ${deleteTarget.batchNumber}`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
         </AdminLayout>

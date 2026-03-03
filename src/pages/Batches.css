@@ -6,52 +6,54 @@
     align-items: center;
     gap: 0.35rem;
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 700;
     padding: 0.25rem 0.65rem;
     border-radius: 20px;
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .batch-status--ok {
-    background: rgba(34, 197, 94, 0.12);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #86efac;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
 }
 
 .batch-status--soon {
-    background: rgba(251, 191, 36, 0.12);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    color: #fde68a;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
 }
 
 .batch-status--expired {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
 }
 
 .batch-status--none {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.35);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
 }
 
 /* Expiry date coloring */
 .batch-date--expired {
-    color: #fca5a5;
-    font-weight: 600;
+    color: #ef4444;
+    font-weight: 700;
 }
 
 .batch-date--soon {
-    color: #fde68a;
-    font-weight: 600;
+    color: #ea580c;
+    font-weight: 700;
 }
 
 /* Stat value coloring */
 .batch-stat--warn {
-    color: #fde68a !important;
+    color: #ea580c !important;
 }
 
 .batch-stat--danger {
-    color: #fca5a5 !important;
+    color: #ef4444 !important;
 }

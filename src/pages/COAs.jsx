@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getCOAs, createCOA, updateCOA, deleteCOA } from "../api/coas";
+import { getCOAs, createCOA, updateCOA, deleteCOA, API_BASE } from "../api/coas";
 import { getBatches } from "../api/batches";
 import AdminLayout from "../components/AdminLayout";
 import COAModal from "../components/COAModal";
@@ -207,12 +207,11 @@ const COAs = () => {
                                     <td className="pm-td pm-td--right">
                                         <div className="pm-actions">
                                             <a
-                                                href={c.fileUrl}
+                                                href={c.fileUrl?.startsWith('http') ? c.fileUrl : `${API_BASE}${c.fileUrl}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="pm-action-btn pm-action-btn--edit"
                                                 title="View Document"
-                                                style={{ color: '#00c9ff' }}
                                             >
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                                             </a>

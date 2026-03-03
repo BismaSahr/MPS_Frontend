@@ -5,8 +5,8 @@
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(2, 8, 18, 0.75);
-    backdrop-filter: blur(6px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,8 +26,8 @@
 }
 
 .modal-panel {
-    background: #0b1628;
-    border: 1px solid rgba(0, 201, 255, 0.2);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 20px;
     width: 100%;
     max-width: 680px;
@@ -35,23 +35,11 @@
     display: flex;
     flex-direction: column;
     box-shadow:
-        0 0 0 1px rgba(0, 201, 255, 0.06),
-        0 25px 60px rgba(0, 0, 0, 0.7),
-        0 0 80px rgba(0, 100, 255, 0.1);
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
     animation: panelIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
     position: relative;
     overflow: hidden;
-}
-
-/* Top shimmer */
-.modal-panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 201, 255, 0.5), transparent);
 }
 
 @keyframes panelIn {
@@ -72,7 +60,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.4rem 1.75rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid #f1f5f9;
     flex-shrink: 0;
 }
 
@@ -85,13 +73,13 @@
 .modal-icon-wrap {
     width: 36px;
     height: 36px;
-    background: rgba(0, 201, 255, 0.1);
-    border: 1px solid rgba(0, 201, 255, 0.2);
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #00c9ff;
+    color: var(--primary);
 }
 
 .modal-icon-wrap svg {
@@ -103,7 +91,7 @@
     font-family: 'Outfit', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #0f172a;
     margin: 0;
 }
 
@@ -113,23 +101,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.4);
+    color: #64748b;
     transition: all 0.2s;
 }
 
-.modal-close svg {
-    width: 16px;
-    height: 16px;
-}
-
 .modal-close:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    color: #0f172a;
+    background: #e2e8f0;
 }
 
 /* Body */
@@ -143,12 +125,8 @@
     width: 5px;
 }
 
-.modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
 .modal-body::-webkit-scrollbar-thumb {
-    background: rgba(0, 201, 255, 0.2);
+    background: #e2e8f0;
     border-radius: 3px;
 }
 
@@ -175,27 +153,27 @@
 
 .form-label {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: rgba(255, 255, 255, 0.5);
+    color: #64748b;
 }
 
 .req {
-    color: #00c9ff;
+    color: #ef4444;
     margin-left: 2px;
 }
 
 .form-input,
 .form-textarea {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
-    color: #e8f4ff;
+    color: #0f172a;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    transition: all 0.2s;
     font-family: inherit;
     width: 100%;
     box-sizing: border-box;
@@ -203,14 +181,14 @@
 
 .form-input::placeholder,
 .form-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.2);
+    color: #94a3b8;
 }
 
 .form-input:focus,
 .form-textarea:focus {
-    border-color: rgba(0, 201, 255, 0.5);
-    background: rgba(0, 201, 255, 0.04);
-    box-shadow: 0 0 0 3px rgba(0, 201, 255, 0.1);
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(43, 90, 158, 0.08);
 }
 
 .form-textarea {
@@ -221,7 +199,7 @@
 
 .form-hint {
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: #94a3b8;
 }
 
 /* Footer */
@@ -231,41 +209,17 @@
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 1.25rem 1.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid #f1f5f9;
     flex-shrink: 0;
 }
 
-@media (max-width: 560px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-field--full {
-        grid-column: 1;
-    }
-
-    .modal-panel {
-        border-radius: 14px;
-    }
-
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        padding-left: 1.2rem;
-        padding-right: 1.2rem;
-    }
-}
-
 /* Image Manager Styles */
-.image-manager {
-    margin-top: 0.5rem;
-}
-
 .image-previews {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 0.75rem;
     margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .image-preview-item {
@@ -273,8 +227,8 @@
     aspect-ratio: 1;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
 }
 
 .image-preview-item img {
@@ -287,10 +241,10 @@
     position: absolute;
     top: 4px;
     right: 4px;
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    background: rgba(239, 68, 68, 0.9);
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: #ef4444;
     color: white;
     border: none;
     display: flex;
@@ -299,15 +253,10 @@
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s;
-    padding: 0;
 }
 
 .image-preview-item:hover .image-remove-btn {
     opacity: 1;
-}
-
-.image-add-options {
-    display: contents;
 }
 
 .image-upload-box,
@@ -318,10 +267,10 @@
     justify-content: center;
     gap: 0.4rem;
     aspect-ratio: 1;
-    border: 1px dashed rgba(0, 201, 255, 0.3);
+    border: 1px dashed #cbd5e1;
     border-radius: 8px;
-    background: rgba(0, 201, 255, 0.03);
-    color: rgba(0, 201, 255, 0.7);
+    background: #f8fafc;
+    color: #64748b;
     font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -329,9 +278,9 @@
 
 .image-upload-box:hover,
 .image-url-btn:hover {
-    background: rgba(0, 201, 255, 0.08);
-    border-color: rgba(0, 201, 255, 0.5);
-    color: #00c9ff;
+    background: #eff6ff;
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .image-upload-box input {
@@ -344,8 +293,8 @@
     height: 18px;
 }
 
-.image-url-btn {
-    border-style: dashed;
-    padding: 0;
-    font-family: inherit;
+@media (max-width: 560px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }

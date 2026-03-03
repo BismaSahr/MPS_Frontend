@@ -34,7 +34,7 @@ const QRGenerateModal = ({ batches, coas, onClose, onGenerate, loading }) => {
             <div className="modal-panel" style={{ maxWidth: '450px' }}>
                 <div className="modal-header">
                     <div className="modal-header-left">
-                        <div className="modal-icon-wrap" style={{ background: 'rgba(0, 201, 255, 0.1)', color: '#00c9ff' }}>
+                        <div className="modal-icon-wrap" style={{ background: '#eff6ff', color: 'var(--primary)' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
                                 <rect x="3" y="14" width="7" height="7" /><path d="M14 14h7v7h-7z" />
@@ -42,13 +42,11 @@ const QRGenerateModal = ({ batches, coas, onClose, onGenerate, loading }) => {
                         </div>
                         <h2 className="modal-title">Generate QR Codes</h2>
                     </div>
-                    <button className="modal-close" onClick={onClose}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                    </button>
+                    <button className="modal-close" onClick={onClose}>&times;</button>
                 </div>
 
                 <div className="modal-body">
-                    <p className="modal-desc" style={{ marginBottom: '1.5rem', color: 'rgba(255,255,255,0.6)' }}>
+                    <p className="modal-desc" style={{ marginBottom: '1.5rem', color: '#64748b' }}>
                         This will generate a unique QR code for every single unit in the selected batch. Ensure the batch quantity is correct.
                     </p>
 

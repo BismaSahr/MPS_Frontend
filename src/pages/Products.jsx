@@ -7,6 +7,7 @@ import {
 } from "../api/products";
 import AdminLayout from "../components/AdminLayout";
 import ProductModal from "../components/ProductModal";
+import ProductPreviewModal from "../components/ProductPreviewModal";
 import DeleteConfirm from "../components/DeleteConfirm";
 import "./Products.css";
 
@@ -41,6 +42,7 @@ const Products = () => {
     const [modalError, setModalError] = useState("");
 
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [previewTarget, setPreviewTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
 
     const [toast, setToast] = useState(null);
@@ -210,6 +212,7 @@ const Products = () => {
                                     <td className="pm-td"><span className="pm-image-count">{p.images?.length || 0} img{p.images?.length !== 1 ? "s" : ""}</span></td>
                                     <td className="pm-td pm-td--right">
                                         <div className="pm-actions">
+                                            <button className="pm-action-btn pm-action-btn--edit" onClick={() => setPreviewTarget(p)} title="Preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg></button>
                                             <button className="pm-action-btn pm-action-btn--edit" onClick={() => openEdit(p)} title="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg></button>
                                             <button className="pm-action-btn pm-action-btn--delete" onClick={() => setDeleteTarget(p)} title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" /></svg></button>
                                         </div>
@@ -222,6 +225,7 @@ const Products = () => {
             )}
 
             {modal && <ProductModal mode={modal} product={editTarget} form={form} setForm={setForm} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} error={modalError} />}
+            {previewTarget && <ProductPreviewModal product={previewTarget} onClose={() => setPreviewTarget(null)} />}
             {deleteTarget && <DeleteConfirm productName={deleteTarget.name} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
         </AdminLayout>

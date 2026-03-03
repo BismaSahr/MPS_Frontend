@@ -20,3 +20,18 @@ export const generateQRCodes = (batchId) =>
 
 export const deleteQRCode = (id) =>
     axios.delete(`${API_BASE}/api/qrcodes/${id}`, authHeader()).then((r) => r.data);
+
+export const exportQRCodes = (batchId, batchNumber) => {
+    return axios.get(`${API_BASE}/api/qrcodes/export/${batchId}`, {
+        ...authHeader(),
+        responseType: 'blob'
+    }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `qrcodes_${batchNumber || batchId}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    });
+};

@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import { getQRCodes, generateQRCodes, deleteQRCode } from "../api/qrcodes";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { getQRCodes, generateQRCodes, deleteQRCode, exportQRCodes } from "../api/qrcodes";
 import { getBatches } from "../api/batches";
 import { getCOAs } from "../api/coas";
 import AdminLayout from "../components/AdminLayout";
 import QRGenerateModal from "../components/QRGenerateModal";
+import QRListModal from "../components/QRListModal";
 import DeleteConfirm from "../components/DeleteConfirm";
 import "./Products.css";
 
@@ -17,8 +18,8 @@ const QRCodes = () => {
     const [showGenModal, setShowGenModal] = useState(false);
     const [generating, setGenerating] = useState(false);
 
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const [deleting, setDeleting] = useState(false);
+    const [listModalTarget, setListModalTarget] = useState(null);
+    const [exporting, setExporting] = useState(false);
 
     const [toast, setToast] = useState(null);
     const showToast = (msg, type = "success") => {
@@ -43,11 +44,27 @@ const QRCodes = () => {
 
     useEffect(() => { load(); }, [load]);
 
-    const filtered = qrs.filter(q =>
-        q.qrCode?.toLowerCase().includes(search.toLowerCase()) ||
-        q.batchId?.batchNumber?.toLowerCase().includes(search.toLowerCase()) ||
-        q.productId?.name?.toLowerCase().includes(search.toLowerCase())
-    );
+    // Grouping QR codes by batch for the modal
+    const batchDataMap = useMemo(() => {
+        return qrs.reduce((acc, q) => {
+            const bid = q.batchId?._id || q.batchId;
+            if (!bid) return acc;
+            if (!acc[bid]) acc[bid] = [];
+            acc[bid].push(q);
+            return acc;
+        }, {});
+    }, [qrs]);
+
+    // Display list: Batches that have QR codes generated
+    const qrBatches = useMemo(() => {
+        const generatedIds = new Set(Object.keys(batchDataMap));
+        return batches
+            .filter(b => generatedIds.has(b._id))
+            .filter(b =>
+                b.batchNumber?.toLowerCase().includes(search.toLowerCase()) ||
+                b.productId?.name?.toLowerCase().includes(search.toLowerCase())
+            );
+    }, [batches, batchDataMap, search]);
 
     const handleGenerate = async (batchId) => {
         setGenerating(true);
@@ -63,17 +80,15 @@ const QRCodes = () => {
         }
     };
 
-    const handleDelete = async () => {
-        setDeleting(true);
+    const handleExport = async (batch) => {
+        setExporting(true);
         try {
-            await deleteQRCode(deleteTarget._id);
-            showToast("QR code removed.", "info");
-            setDeleteTarget(null);
-            load();
-        } catch {
-            showToast("Failed to delete.", "error");
+            await exportQRCodes(batch._id, batch.batchNumber);
+            showToast("Export successful!");
+        } catch (err) {
+            showToast("Export failed.", "error");
         } finally {
-            setDeleting(false);
+            setExporting(false);
         }
     };
 
@@ -86,7 +101,7 @@ const QRCodes = () => {
                 <input
                     type="text"
                     className="pm-search"
-                    placeholder="Search Code, Batch, Product..."
+                    placeholder="Search Batch or Product..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
@@ -96,24 +111,21 @@ const QRCodes = () => {
                     <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
                     <rect x="3" y="14" width="7" height="7" /><path d="M14 14h7v7h-7z" />
                 </svg>
-                Generate Codes
+                Generate New
             </button>
         </>
     );
 
     return (
         <AdminLayout topbarActions={topbarActions}>
-            {/* Stats */}
             <div className="pm-stats-bar">
+                <div className="pm-stat">
+                    <span className="pm-stat-val">{Object.keys(batchDataMap).length}</span>
+                    <span className="pm-stat-label">Active Batches</span>
+                </div>
                 <div className="pm-stat">
                     <span className="pm-stat-val">{qrs.length}</span>
                     <span className="pm-stat-label">Total QR Units</span>
-                </div>
-                <div className="pm-stat">
-                    <span className="pm-stat-val batch-stat--ok">
-                        {new Set(qrs.map(q => q.batchId?._id || q.batchId)).size}
-                    </span>
-                    <span className="pm-stat-label">Active Batches</span>
                 </div>
                 <div className="pm-stat">
                     <span className="pm-stat-val">
@@ -125,7 +137,7 @@ const QRCodes = () => {
 
             {fetching ? (
                 <div className="pm-center"><div className="pm-spinner" /><p className="pm-loading-text">Loading QR database…</p></div>
-            ) : filtered.length === 0 ? (
+            ) : qrBatches.length === 0 ? (
                 <div className="pm-center">
                     <div className="pm-empty-state">
                         <div className="pm-empty-icon">
@@ -134,7 +146,7 @@ const QRCodes = () => {
                                 <rect x="3" y="14" width="7" height="7" /><path d="M14 14h7v7h-7z" />
                             </svg>
                         </div>
-                        <h3>{search ? "No matches found." : "No QR codes generated."}</h3>
+                        <h3>{search ? "No batches found." : "No QR codes generated yet."}</h3>
                         {!search && <button className="pm-add-btn" onClick={() => setShowGenModal(true)}>Generate First Batch</button>}
                     </div>
                 </div>
@@ -143,38 +155,61 @@ const QRCodes = () => {
                     <table className="pm-table">
                         <thead>
                             <tr>
-                                <th className="pm-th">Product & Batch</th>
-                                <th className="pm-th">Unique QR String</th>
-                                <th className="pm-th pm-th--hide-sm">Status</th>
-                                <th className="pm-th pm-th--hide-md">Scans</th>
+                                <th className="pm-th">Product Name</th>
+                                <th className="pm-th">Batch Number</th>
+                                <th className="pm-th pm-th--hide-sm">Unit Count</th>
+                                <th className="pm-th pm-th--hide-md">Total Scans</th>
                                 <th className="pm-th pm-th--right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filtered.map((q) => (
-                                <tr key={q._id} className="pm-tr">
-                                    <td className="pm-td">
-                                        <div className="pm-product-name">{q.productId?.name || "Unknown"}</div>
-                                        <div className="pm-product-desc">Batch: {q.batchId?.batchNumber || "—"}</div>
-                                    </td>
-                                    <td className="pm-td">
-                                        <code className="pm-code">{q.qrCode?.substring(0, 13)}...</code>
-                                    </td>
-                                    <td className="pm-td pm-td--hide-sm">
-                                        <span className={`pm-status pm-status--${q.status === 'unused' ? 'active' : 'expired'}`}>
-                                            {q.status}
-                                        </span>
-                                    </td>
-                                    <td className="pm-td pm-td--hide-md">
-                                        <span className="pm-badge">{q.scanCount || 0}</span>
-                                    </td>
-                                    <td className="pm-td pm-td--right">
-                                        <div className="pm-actions">
-                                            <button className="pm-action-btn pm-action-btn--delete" onClick={() => setDeleteTarget(q)} title="Delete Code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" /></svg></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            {qrBatches.map((b) => {
+                                const codes = batchDataMap[b._id] || [];
+                                const scanSum = codes.reduce((sum, q) => sum + (q.scanCount || 0), 0);
+                                return (
+                                    <tr key={b._id} className="pm-tr">
+                                        <td className="pm-td">
+                                            <div className="pm-product-name">{b.productId?.name || "Unknown"}</div>
+                                        </td>
+                                        <td className="pm-td">
+                                            <code className="pm-badge">{b.batchNumber}</code>
+                                        </td>
+                                        <td className="pm-td pm-td--hide-sm">
+                                            <span className="pm-image-count">{codes.length} Units</span>
+                                        </td>
+                                        <td className="pm-td pm-td--hide-md">
+                                            <span className="pm-badge">{scanSum}</span>
+                                        </td>
+                                        <td className="pm-td pm-td--right">
+                                            <div className="pm-actions">
+                                                <button
+                                                    className="pm-action-btn pm-action-btn--edit"
+                                                    style={{ width: 'auto', padding: '0 1rem', fontSize: '0.8rem', gap: '0.4rem' }}
+                                                    onClick={() => setListModalTarget(b)}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                        <circle cx="12" cy="12" r="3" />
+                                                    </svg>
+                                                    View Codes
+                                                </button>
+                                                <button
+                                                    className="pm-action-btn"
+                                                    title="Export CSV"
+                                                    onClick={() => handleExport(b)}
+                                                    disabled={exporting}
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="7 10 12 15 17 10" />
+                                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -182,7 +217,7 @@ const QRCodes = () => {
 
             {showGenModal && (
                 <QRGenerateModal
-                    batches={batches.filter(b => !qrs.some(q => (q.batchId?._id || q.batchId) === b._id))}
+                    batches={batches.filter(b => !batchDataMap[b._id])}
                     coas={coas}
                     onClose={() => setShowGenModal(false)}
                     onGenerate={handleGenerate}
@@ -190,12 +225,13 @@ const QRCodes = () => {
                 />
             )}
 
-            {deleteTarget && (
-                <DeleteConfirm
-                    productName={`QR Code ${deleteTarget.qrCode?.substring(0, 8)}`}
-                    onCancel={() => setDeleteTarget(null)}
-                    onConfirm={handleDelete}
-                    loading={deleting}
+            {listModalTarget && (
+                <QRListModal
+                    batch={listModalTarget}
+                    qrs={batchDataMap[listModalTarget._id] || []}
+                    onClose={() => setListModalTarget(null)}
+                    onExport={handleExport}
+                    loadingExport={exporting}
                 />
             )}
 
