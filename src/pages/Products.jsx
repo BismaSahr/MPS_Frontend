@@ -4,6 +4,7 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
+    API_BASE
 } from "../api/products";
 import AdminLayout from "../components/AdminLayout";
 import ProductModal from "../components/ProductModal";
@@ -42,6 +43,13 @@ const payloadToForm = (p) => ({
     packaging: p.packaging || "",
     images: Array.isArray(p.images) ? [...p.images] : [],
 });
+
+const resolveImageUrl = (img) => {
+    if (!img) return "";
+    if (img instanceof File) return URL.createObjectURL(img);
+    if (img.startsWith("http") || img.startsWith("data:")) return img;
+    return `${API_BASE}${img.startsWith("/") ? "" : "/"}${img}`;
+};
 
 const Products = () => {
     const [products, setProducts] = useState([]);
@@ -210,7 +218,7 @@ const Products = () => {
                                     <td className="pm-td">
                                         <div className="pm-product-cell">
                                             {p.images?.[0] ? (
-                                                <img src={p.images[0]} alt={p.name} className="pm-product-thumb" onError={(e) => { e.target.style.display = "none"; }} />
+                                                <img src={resolveImageUrl(p.images[0])} alt={p.name} className="pm-product-thumb" onError={(e) => { e.target.style.display = "none"; }} />
                                             ) : (
                                                 <div className="pm-product-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg></div>
                                             )}

@@ -1,7 +1,14 @@
 import React, { useState } from "react";
+import { API_BASE } from "../api/products";
 import "./ProductPreviewModal.css";
 
 const ProductPreviewModal = ({ product, onClose }) => {
+    const resolveImageUrl = (img) => {
+        if (!img) return "";
+        if (img.startsWith("http") || img.startsWith("data:")) return img;
+        return `${API_BASE}${img.startsWith("/") ? "" : "/"}${img}`;
+    };
+
     const [selectedImg, setSelectedImg] = useState(product?.images?.[0] || "");
 
     if (!product) return null;
@@ -27,7 +34,7 @@ const ProductPreviewModal = ({ product, onClose }) => {
                         <div className="product-preview-images">
                             <div className="main-image-wrap">
                                 {selectedImg ? (
-                                    <img src={selectedImg} alt={product.name} className="main-image" />
+                                    <img src={resolveImageUrl(selectedImg)} alt={product.name} className="main-image" />
                                 ) : (
                                     <div className="image-placeholderLarge">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -44,7 +51,7 @@ const ProductPreviewModal = ({ product, onClose }) => {
                                             className={`thumb-wrap ${selectedImg === img ? 'active' : ''}`}
                                             onClick={() => setSelectedImg(img)}
                                         >
-                                            <img src={img} alt={`Thumb ${i}`} />
+                                            <img src={resolveImageUrl(img)} alt={`Thumb ${i}`} />
                                         </div>
                                     ))}
                                 </div>

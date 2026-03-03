@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { API_BASE } from "../api/products";
 import "./ProductModal.css";
 
 const EMPTY = {
@@ -13,6 +14,13 @@ const EMPTY = {
 const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
     const [errors, setErrors] = useState({});
+
+    const resolveImageUrl = (img) => {
+        if (!img) return "";
+        if (img instanceof File) return URL.createObjectURL(img);
+        if (img.startsWith("http") || img.startsWith("data:")) return img;
+        return `${API_BASE}${img.startsWith("/") ? "" : "/"}${img}`;
+    };
 
     // Focus first field on open
     useEffect(() => {
@@ -182,7 +190,7 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                     <div className="image-previews">
                                         {Array.isArray(form.images) && form.images.map((img, idx) => {
                                             const isFile = img instanceof File;
-                                            const previewUrl = isFile ? URL.createObjectURL(img) : img;
+                                            const previewUrl = resolveImageUrl(img);
                                             return (
                                                 <div key={idx} className="image-preview-item">
                                                     <img
