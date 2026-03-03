@@ -236,7 +236,14 @@ const COAs = () => {
                 </div>
             )}
 
-            {modal && <COAModal mode={modal} form={form} setForm={setForm} batches={batches} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
+            {modal && (() => {
+                const hasCOA = (bId) => (coas || []).some(c => (c.batchId?._id || c.batchId) === bId);
+                const availableBatches = (batches || []).filter(b => {
+                    if (modal === "create") return !hasCOA(b._id);
+                    return !hasCOA(b._id) || b._id === editTarget?.batchId?._id || b._id === editTarget?.batchId;
+                });
+                return <COAModal mode={modal} form={form} setForm={setForm} batches={availableBatches} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />;
+            })()}
             {deleteTarget && <DeleteConfirm productName={`COA for Batch ${deleteTarget.batchId?.batchNumber}`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
         </AdminLayout>
