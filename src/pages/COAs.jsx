@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getCOAs, createCOA, updateCOA, deleteCOA, API_BASE } from "../api/coas";
 import { getBatches } from "../api/batches";
+import { getProducts } from "../api/products";
 import AdminLayout from "../components/AdminLayout";
 import COAModal from "../components/COAModal";
 import DeleteConfirm from "../components/DeleteConfirm";
@@ -23,6 +24,7 @@ const formatDate = (d) => {
 const COAs = () => {
     const [coas, setCoas] = useState([]);
     const [batches, setBatches] = useState([]);
+    const [products, setProducts] = useState([]);
     const [fetching, setFetching] = useState(true);
     const [fetchError, setFetchError] = useState("");
     const [search, setSearch] = useState("");
@@ -45,10 +47,11 @@ const COAs = () => {
         setFetching(true);
         setFetchError("");
         try {
-            const [c, b] = await Promise.all([getCOAs(), getBatches()]);
+            const [c, b, p] = await Promise.all([getCOAs(), getBatches(), getProducts()]);
             // Defensive checks in case backend returns unexpected format
             setCoas(Array.isArray(c) ? c : []);
             setBatches(Array.isArray(b) ? b : []);
+            setProducts(Array.isArray(p) ? p : []);
         } catch (err) {
             console.error("COA Load Error:", err);
             setFetchError("Failed to load COAs. Check your backend connection.");
@@ -58,6 +61,13 @@ const COAs = () => {
     }, []);
 
     useEffect(() => { load(); }, [load]);
+
+    const productName = useCallback((idOrObj) => {
+        if (!idOrObj) return "Unknown";
+        if (typeof idOrObj === 'object' && idOrObj.name) return idOrObj.name;
+        const id = typeof idOrObj === 'object' ? idOrObj._id : idOrObj;
+        return products.find(p => p._id === id)?.name || "Unknown";
+    }, [products]);
 
     const filtered = (Array.isArray(coas) ? coas : []).filter(
         (c) =>
@@ -196,7 +206,7 @@ const COAs = () => {
                                 <tr key={c._id} className="pm-tr">
                                     <td className="pm-td">
                                         <div className="pm-product-name">{c.batchId?.batchNumber || "Unknown"}</div>
-                                        <div className="pm-product-desc">{c.batchId?.productId?.name || ""}</div>
+                                        <div className="pm-product-desc">{productName(c.batchId?.productId)}</div>
                                     </td>
                                     <td className="pm-td">{c.labName || <span className="pm-muted">N/A</span>}</td>
                                     <td className="pm-td pm-td--hide-sm">
@@ -226,7 +236,7 @@ const COAs = () => {
                 </div>
             )}
 
-            {modal && <COAModal mode={modal} form={form} setForm={setForm} batches={batches} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
+            {modal && <COAModal mode={modal} form={form} setForm={setForm} batches={batches} products={products} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} />}
             {deleteTarget && <DeleteConfirm productName={`COA for Batch ${deleteTarget.batchId?.batchNumber}`} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
         </AdminLayout>

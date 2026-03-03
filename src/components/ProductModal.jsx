@@ -225,9 +225,8 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                     </form>
                 </div>
 
-                {/* Footer */}
                 <div className="modal-footer">
-                    <button className="btn-ghost" onClick={onClose} disabled={loading}>
+                    <button type="button" className="btn-ghost" onClick={onClose} disabled={loading}>
                         Cancel
                     </button>
                     <button

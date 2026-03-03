@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./ProductModal.css";
 
-const COAModal = ({ mode, form, setForm, batches, onClose, onSubmit, loading }) => {
+const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
     const [filePreview, setFilePreview] = useState(null);
 
@@ -75,11 +75,14 @@ const COAModal = ({ mode, form, setForm, batches, onClose, onSubmit, loading }) 
                                     required
                                 >
                                     <option value="">— Select a batch —</option>
-                                    {batches.map((b) => (
-                                        <option key={b._id} value={b._id}>
-                                            {b.batchNumber} ({b.productId?.name || "Unknown Product"})
-                                        </option>
-                                    ))}
+                                    {batches.map((b) => {
+                                        const pName = products.find(p => p._id === (b.productId?._id || b.productId))?.name || b.productId?.name || "Unknown";
+                                        return (
+                                            <option key={b._id} value={b._id}>
+                                                {b.batchNumber} ({pName})
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </div>
 
@@ -143,16 +146,27 @@ const COAModal = ({ mode, form, setForm, batches, onClose, onSubmit, loading }) 
                     </form>
                 </div>
 
-                {/* Footer */}
                 <div className="modal-footer">
-                    <button className="btn-ghost" onClick={onClose} disabled={loading}>Cancel</button>
+                    <button type="button" className="btn-ghost" onClick={onClose} disabled={loading}>Cancel</button>
                     <button type="submit" form="coa-form" className="btn-primary" disabled={loading}>
                         {loading ? (
                             <span className="btn-spinner" />
                         ) : mode === "create" ? (
-                            <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="btn-icon"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>Upload Document</>
+                            <>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="btn-icon">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                                Upload Document
+                            </>
                         ) : (
-                            <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="btn-icon"><polyline points="20 6 9 17 4 12" /></svg>Save Changes</>
+                            <>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="btn-icon">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                Save Changes
+                            </>
                         )}
                     </button>
                 </div>
