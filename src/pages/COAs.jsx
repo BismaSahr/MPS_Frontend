@@ -13,8 +13,19 @@ const payloadToForm = (c) => ({
     batchId: c.batchId?._id || c.batchId || "",
     labName: c.labName || "",
     purity: c.purity || "",
-    file: null, // Files cannot be populated from URL
+    file: null,
 });
+
+const formToPayload = (form) => {
+    const fd = new FormData();
+    fd.append("batchId", form.batchId || "");
+    fd.append("labName", form.labName || "");
+    fd.append("purity", form.purity || "");
+    if (form.file) {
+        fd.append("file", form.file);
+    }
+    return fd;
+};
 
 const formatDate = (d) => {
     if (!d) return "—";
@@ -82,19 +93,13 @@ const COAs = () => {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const formData = new FormData();
-            formData.append("batchId", form.batchId);
-            formData.append("labName", form.labName);
-            formData.append("purity", form.purity);
-            if (form.file) {
-                formData.append("file", form.file);
-            }
+            const payload = formToPayload(form);
 
             if (modal === "create") {
-                await createCOA(formData);
+                await createCOA(payload);
                 showToast("COA uploaded successfully!");
             } else {
-                await updateCOA(editTarget._id, formData);
+                await updateCOA(editTarget._id, payload);
                 showToast("COA updated successfully!");
             }
             setModal(null);

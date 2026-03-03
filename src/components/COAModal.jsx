@@ -33,12 +33,10 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
             const file = files[0];
             setForm((p) => ({ ...p, file }));
             if (errors.file) setErrors(prev => ({ ...prev, file: "" }));
+
             if (file) {
-                // If image, show preview. If PDF, just show name.
                 if (file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => setFilePreview(reader.result);
-                    reader.readAsDataURL(file);
+                    setFilePreview(URL.createObjectURL(file));
                 } else {
                     setFilePreview(null);
                 }
@@ -48,6 +46,15 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
             if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
         }
     };
+
+    // Clean up blob URLs to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            if (filePreview && filePreview.startsWith("blob:")) {
+                URL.revokeObjectURL(filePreview);
+            }
+        };
+    }, [filePreview]);
 
     const handleBackdrop = (e) => {
         if (e.target === e.currentTarget) onClose();
