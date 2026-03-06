@@ -21,6 +21,7 @@ const QRCodes = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [selectedBatchId, setSelectedBatchId] = useState("");
+    const [generatedBatchIds, setGeneratedBatchIds] = useState(new Set());
 
     const [showGenModal, setShowGenModal] = useState(false);
     const [generating, setGenerating] = useState(false);
@@ -53,9 +54,25 @@ const QRCodes = () => {
     const loadInitialDeps = useCallback(async () => {
         try {
             const [b, c, p] = await Promise.all([getBatches(), getCOAs(), getProducts()]);
-            setBatches(Array.isArray(b) ? b : []);
-            setCoas(Array.isArray(c) ? c : []);
+            const batchesList = Array.isArray(b) ? b : [];
+            const coasList = Array.isArray(c) ? c : [];
+            setBatches(batchesList);
+            setCoas(coasList);
             setProducts(Array.isArray(p) ? p : []);
+
+            // Check which batches already have QR codes to hide them in the generator dropdown
+            const batchesWithCOA = batchesList.filter(batch => coasList.some(coa => (coa.batchId?._id || coa.batchId) === batch._id));
+            const qrStatusChecks = await Promise.all(batchesWithCOA.map(async batch => {
+                try {
+                    // Quick check using pagination limit 1 to get totalCount for the batch
+                    const res = await import("../api/qrcodes").then(m => m.getBatchQRCodes(batch._id, 1, 1));
+                    return { id: batch._id, hasQR: res.totalCount > 0 };
+                } catch {
+                    return { id: batch._id, hasQR: false };
+                }
+            }));
+            const generated = new Set(qrStatusChecks.filter(s => s.hasQR).map(s => s.id));
+            setGeneratedBatchIds(generated);
         } catch (err) {
             console.error("Deps Load Error:", err);
         }
@@ -82,6 +99,7 @@ const QRCodes = () => {
             const res = await generateQRCodes(batchId);
             showToast(res.message || "Codes generated!");
             setShowGenModal(false);
+            setGeneratedBatchIds(prev => new Set(prev).add(batchId));
             setPage(1);
             loadData();
         } catch (err) {
@@ -287,7 +305,9 @@ const QRCodes = () => {
 
             {showGenModal && (
                 <QRGenerateModal
-                    batches={batches}
+                    batches={batches
+                        .filter(b => !generatedBatchIds.has(b._id))
+                        .map(b => ({ ...b, productName: productName(b?.productId || b) }))}
                     coas={coas}
                     onClose={() => setShowGenModal(false)}
                     onGenerate={handleGenerate}
