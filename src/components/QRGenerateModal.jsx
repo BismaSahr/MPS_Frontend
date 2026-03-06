@@ -63,7 +63,7 @@ const QRGenerateModal = ({ batches, coas, onClose, onGenerate, loading }) => {
                                 <option value="">— Select Batch —</option>
                                 {batches.map(b => (
                                     <option key={b._id} value={b._id}>
-                                        {b.batchNumber} ({b.productId?.name || "Unknown"}) — {b.quantity} units
+                                        {b.batchNumber} ({b.productName || "Unknown"}) — {b.quantity} units
                                     </option>
                                 ))}
                             </select>

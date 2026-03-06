@@ -222,7 +222,7 @@ const QRCodes = () => {
                                 <th className="pm-th">Batch Number</th>
                                 <th className="pm-th pm-th--hide-sm">Status</th>
                                 <th className="pm-th pm-th--hide-md">Scans</th>
-                                <th className="pm-th pm-th--right">Actions</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -247,21 +247,7 @@ const QRCodes = () => {
                                         <td className="pm-td pm-td--hide-md">
                                             <span className="pm-badge">{q.scanCount || 0}</span>
                                         </td>
-                                        <td className="pm-td pm-td--right">
-                                            <div className="pm-actions">
-                                                <button
-                                                    className="pm-action-btn pm-action-btn--delete"
-                                                    title="Delete QR Code"
-                                                    onClick={() => setDeleteTarget(q)}
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <polyline points="3 6 5 6 21 6" />
-                                                        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
-                                                        <path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </td>
+
                                     </tr>
                                 );
                             })}
@@ -307,7 +293,7 @@ const QRCodes = () => {
                 <QRGenerateModal
                     batches={batches
                         .filter(b => !generatedBatchIds.has(b._id))
-                        .map(b => ({ ...b, productName: productName(b?.productId || b) }))}
+                        .map(b => ({ ...b, productName: productName(b.productId) }))}
                     coas={coas}
                     onClose={() => setShowGenModal(false)}
                     onGenerate={handleGenerate}
@@ -315,14 +301,7 @@ const QRCodes = () => {
                 />
             )}
 
-            {deleteTarget && (
-                <DeleteConfirm
-                    productName={`QR Code ${deleteTarget.qrCode}`}
-                    onCancel={() => setDeleteTarget(null)}
-                    onConfirm={handleDelete}
-                    loading={deleting}
-                />
-            )}
+
 
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.msg}</div>}
         </AdminLayout>
