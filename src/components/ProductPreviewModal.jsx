@@ -66,6 +66,19 @@ const ProductPreviewModal = ({ product, onClose }) => {
                             </div>
 
                             <div className="info-group">
+                                <label className="info-label">Category</label>
+                                <div className="info-value">
+                                    {product.categoryId?.name ? (
+                                        <span className="pm-badge" style={{ backgroundColor: 'rgba(37, 75, 154, 0.1)', color: 'var(--secondary)', display: 'inline-block' }}>
+                                            {product.categoryId.name}
+                                        </span>
+                                    ) : (
+                                        <span className="pm-muted">Uncategorized</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="info-group">
                                 <label className="info-label">Slug / ID</label>
                                 <div className="info-value"><code className="pm-slug">{product.slug}</code></div>
                             </div>

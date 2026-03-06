@@ -8,10 +8,11 @@ const EMPTY = {
     description: "",
     storage: "",
     packaging: "",
-    images: "",
+    images: [],
+    categoryId: "",
 };
 
-const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading }) => {
+const ProductModal = ({ mode, product, form, setForm, categories, onClose, onSubmit, loading }) => {
     const firstRef = useRef(null);
     const [errors, setErrors] = useState({});
 
@@ -169,6 +170,22 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                                 />
                             </div>
 
+                            {/* Category */}
+                            <div className="form-field">
+                                <label className="form-label">Category</label>
+                                <select
+                                    name="categoryId"
+                                    value={form.categoryId || ""}
+                                    onChange={handleChange}
+                                    className="form-select"
+                                >
+                                    <option value="">— Select Category —</option>
+                                    {(categories || []).map(c => (
+                                        <option key={c._id} value={c._id}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
                             {/* Description */}
                             <div className="form-field form-field--full">
                                 <label className="form-label">Description</label>
@@ -299,8 +316,8 @@ const ProductModal = ({ mode, product, form, setForm, onClose, onSubmit, loading
                         )}
                     </button>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

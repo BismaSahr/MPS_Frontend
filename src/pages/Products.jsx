@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { getCategories } from "../api/categories";
 import {
     getProducts,
     createProduct,
@@ -13,7 +14,7 @@ import DeleteConfirm from "../components/DeleteConfirm";
 import "./Products.css";
 
 const EMPTY_FORM = {
-    name: "", slug: "", description: "", storage: "", packaging: "", images: [],
+    name: "", slug: "", description: "", storage: "", packaging: "", images: [], categoryId: "",
 };
 
 const formToPayload = (form) => {
@@ -23,6 +24,7 @@ const formToPayload = (form) => {
     fd.append("description", form.description || "");
     fd.append("storage", form.storage || "");
     fd.append("packaging", form.packaging || "");
+    fd.append("categoryId", form.categoryId || "");
 
     // Append images
     if (Array.isArray(form.images)) {
@@ -42,6 +44,7 @@ const payloadToForm = (p) => ({
     storage: p.storage || "",
     packaging: p.packaging || "",
     images: Array.isArray(p.images) ? [...p.images] : [],
+    categoryId: p.categoryId?._id || p.categoryId || "",
 });
 
 const resolveImageUrl = (img) => {
@@ -53,9 +56,11 @@ const resolveImageUrl = (img) => {
 
 const Products = () => {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [fetching, setFetching] = useState(true);
     const [fetchError, setFetchError] = useState("");
     const [search, setSearch] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     const [modal, setModal] = useState(null);
     const [editTarget, setEditTarget] = useState(null);
@@ -77,9 +82,11 @@ const Products = () => {
         setFetching(true);
         setFetchError("");
         try {
-            setProducts(await getProducts());
+            const [p, c] = await Promise.all([getProducts(), getCategories()]);
+            setProducts(p);
+            setCategories(c);
         } catch {
-            setFetchError("Failed to load products. Check your backend connection.");
+            setFetchError("Failed to load data. Check your backend connection.");
         } finally {
             setFetching(false);
         }
@@ -89,8 +96,9 @@ const Products = () => {
 
     const filtered = products.filter(
         (p) =>
-            p.name?.toLowerCase().includes(search.toLowerCase()) ||
-            p.slug?.toLowerCase().includes(search.toLowerCase())
+            (p.name?.toLowerCase().includes(search.toLowerCase()) ||
+                p.slug?.toLowerCase().includes(search.toLowerCase())) &&
+            (!selectedCategory || (p.categoryId?._id || p.categoryId) === selectedCategory)
     );
 
     const openCreate = () => { setForm(EMPTY_FORM); setModalError(""); setModal("create"); };
@@ -146,6 +154,19 @@ const Products = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
+            </div>
+            <div className="pm-search-wrap" style={{ minWidth: '160px' }}>
+                <select
+                    className="pm-search"
+                    style={{ paddingLeft: '1rem', width: '100%', appearance: 'auto' }}
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                    <option value="">All Categories</option>
+                    {categories.map(c => (
+                        <option key={c._id} value={c._id}>{c.name}</option>
+                    ))}
+                </select>
             </div>
             <button className="pm-add-btn" onClick={openCreate} id="add-product-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -204,6 +225,7 @@ const Products = () => {
                             <tr>
                                 <th className="pm-th">#</th>
                                 <th className="pm-th">Product</th>
+                                <th className="pm-th pm-th--hide-sm">Category</th>
                                 <th className="pm-th pm-th--hide-sm">Slug</th>
                                 <th className="pm-th pm-th--hide-md">Storage</th>
                                 <th className="pm-th pm-th--hide-md">Packaging</th>
@@ -228,6 +250,15 @@ const Products = () => {
                                             </div>
                                         </div>
                                     </td>
+                                    <td className="pm-td pm-td--hide-sm">
+                                        {p.categoryId?.name ? (
+                                            <span className="pm-badge" style={{ backgroundColor: 'rgba(37, 75, 154, 0.1)', color: 'var(--secondary)' }}>
+                                                {p.categoryId.name}
+                                            </span>
+                                        ) : (
+                                            <span className="pm-muted">Uncategorized</span>
+                                        )}
+                                    </td>
                                     <td className="pm-td pm-td--hide-sm"><code className="pm-slug">{p.slug}</code></td>
                                     <td className="pm-td pm-td--hide-md">{p.storage ? <span className="pm-badge">{p.storage}</span> : <span className="pm-muted">—</span>}</td>
                                     <td className="pm-td pm-td--hide-md">{p.packaging || <span className="pm-muted">—</span>}</td>
@@ -246,7 +277,7 @@ const Products = () => {
                 </div>
             )}
 
-            {modal && <ProductModal mode={modal} product={editTarget} form={form} setForm={setForm} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} error={modalError} />}
+            {modal && <ProductModal mode={modal} product={editTarget} form={form} setForm={setForm} categories={categories} onClose={() => setModal(null)} onSubmit={handleSubmit} loading={submitting} error={modalError} />}
             {previewTarget && <ProductPreviewModal product={previewTarget} onClose={() => setPreviewTarget(null)} />}
             {deleteTarget && <DeleteConfirm productName={deleteTarget.name} onCancel={() => setDeleteTarget(null)} onConfirm={handleDelete} loading={deleting} />}
             {toast && <div className={`pm-toast pm-toast--${toast.type}`}>{toast.type === "success" && "✓ "}{toast.type === "error" && "✗ "}{toast.type === "info" && "ℹ "}{toast.msg}</div>}
