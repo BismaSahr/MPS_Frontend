@@ -35,7 +35,10 @@ export const getDashboardStats = async () => {
                 { type: "batch", message: "New batch #MPS-R-2024 created", time: new Date(Date.now() - 3600000).toISOString() },
                 { type: "coa", message: "COA uploaded for Batch #9921", time: new Date(Date.now() - 14400000).toISOString() }
             ],
-            scanActivity: [65, 59, 80, 81, 56, 55, 40] // Last 7 days
+            scanActivity: {
+                week: [65, 59, 80, 81, 56, 55, 40],
+                month: [45, 52, 38, 65, 59, 80, 81, 56, 55, 40, 72, 88, 95, 102, 98, 110, 85, 92, 78, 65, 59, 80, 81, 56, 55, 40, 30, 25, 35, 45]
+            }
         };
     }
 };

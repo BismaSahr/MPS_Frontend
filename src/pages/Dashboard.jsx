@@ -6,6 +6,7 @@ import "./Dashboard.css";
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [timeframe, setTimeframe] = useState("week"); // week or month
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -21,6 +22,10 @@ const Dashboard = () => {
             <div className="pm-center"><div className="pm-spinner" /><p className="pm-loading-text">Analyzing MPS Systems...</p></div>
         </AdminLayout>
     );
+
+    const currentData = stats.scanActivity[timeframe] || [];
+    const maxVal = Math.max(...currentData, 5); // Ensure at least 5 for scale if all 0
+    const hasData = currentData.some(v => v > 0);
 
     return (
         <AdminLayout>
@@ -67,19 +72,49 @@ const Dashboard = () => {
             {/* Middle Section: Activity & Distribution */}
             <div className="dashboard-grid" style={{ marginTop: '2rem' }}>
                 <div className="chart-section">
-                    <h3 style={{ marginBottom: '1.5rem' }}>Scan Activity (Last 7 Days)</h3>
-                    <div className="bar-chart">
-                        {stats.scanActivity.map((val, i) => (
+                    <div className="chart-header">
+                        <h3 style={{ margin: 0 }}>Scan Activity</h3>
+                        <div className="time-toggle">
+                            <button
+                                className={`toggle-btn ${timeframe === "week" ? "active" : ""}`}
+                                onClick={() => setTimeframe("week")}
+                            >Week</button>
+                            <button
+                                className={`toggle-btn ${timeframe === "month" ? "active" : ""}`}
+                                onClick={() => setTimeframe("month")}
+                            >Month</button>
+                        </div>
+                    </div>
+
+                    <div className="bar-chart" style={{ position: 'relative' }}>
+                        {!hasData && (
+                            <div style={{
+                                position: 'absolute',
+                                left: 0, right: 0, top: '50%',
+                                transform: 'translateY(-50%)',
+                                textAlign: 'center',
+                                color: 'var(--text-secondary)',
+                                fontSize: '0.85rem',
+                                zIndex: 1
+                            }}>
+                                No authentication data for this period
+                            </div>
+                        )}
+                        {currentData.map((val, i) => (
                             <div
                                 key={i}
                                 className="bar"
-                                style={{ height: `${(val / Math.max(...stats.scanActivity)) * 100}%` }}
+                                style={{
+                                    height: `${(val / maxVal) * 100}%`,
+                                    minHeight: '2px', // UX: Always show a tiny line even for 0
+                                    opacity: hasData ? 1 : 0.2
+                                }}
                                 title={`${val} scans`}
                             />
                         ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: '0.5rem' }}>
-                        <span>7d ago</span>
+                        <span>{timeframe === "week" ? "7d ago" : "30d ago"}</span>
                         <span>Today</span>
                     </div>
                 </div>

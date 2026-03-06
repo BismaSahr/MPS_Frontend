@@ -37,6 +37,9 @@ const ProductModal = ({ mode, product, form, setForm, categories, onClose, onSub
         } else if (!/^[a-z0-9-]+$/.test(form.slug)) {
             newErrors.slug = "Slug can only contain lowercase letters, numbers, and hyphens";
         }
+        if (!form.categoryId) {
+            newErrors.categoryId = "Please select a category";
+        }
         if (!form.images || form.images.length === 0) {
             newErrors.images = "At least one product image is required";
         }
@@ -172,18 +175,19 @@ const ProductModal = ({ mode, product, form, setForm, categories, onClose, onSub
 
                             {/* Category */}
                             <div className="form-field">
-                                <label className="form-label">Category</label>
+                                <label className="form-label">Category <span className="req">*</span></label>
                                 <select
                                     name="categoryId"
                                     value={form.categoryId || ""}
                                     onChange={handleChange}
-                                    className="form-select"
+                                    className={`form-select ${errors.categoryId ? "form-input--error" : ""}`}
                                 >
                                     <option value="">— Select Category —</option>
                                     {(categories || []).map(c => (
                                         <option key={c._id} value={c._id}>{c.name}</option>
                                     ))}
                                 </select>
+                                {errors.categoryId && <span className="error-text">{errors.categoryId}</span>}
                             </div>
 
                             {/* Description */}

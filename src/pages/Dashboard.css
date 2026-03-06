@@ -101,6 +101,39 @@
     filter: brightness(1.2);
 }
 
+/* Timeframe Toggle */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.time-toggle {
+    display: flex;
+    background: var(--background-main);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transitions-standard);
+}
+
+.toggle-btn.active {
+    background: var(--secondary);
+    color: white;
+}
+
 @media (max-width: 1200px) {
     .dashboard-grid {
         grid-template-columns: repeat(2, 1fr);
