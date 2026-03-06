@@ -3,12 +3,12 @@
    ============================================= */
 
 .form-select {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--surface-border);
     border-radius: 10px;
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
-    color: #0f172a;
+    color: var(--text-primary);
     outline: none;
     transition: all 0.2s;
     font-family: inherit;
@@ -16,7 +16,7 @@
     box-sizing: border-box;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.9rem center;
     background-size: 16px;
@@ -24,19 +24,19 @@
 }
 
 .form-select option {
-    background: #ffffff;
-    color: #0f172a;
+    background: var(--surface);
+    color: var(--text-primary);
 }
 
 .form-select:focus {
     border-color: var(--primary);
-    background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(43, 90, 158, 0.08);
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(255, 27, 33, 0.15);
 }
 
 /* Date input styling */
 .form-input--date {
-    color-scheme: light;
+    color-scheme: dark;
 }
 
 .form-input--date::-webkit-calendar-picker-indicator {

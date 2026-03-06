@@ -26,8 +26,8 @@
 }
 
 .dc-panel {
-    background: #ffffff;
-    border: 1px solid #fee2e2;
+    background: var(--surface);
+    border: 1px solid rgba(239, 68, 68, 0.4);
     border-radius: 18px;
     padding: 2rem 1.75rem;
     width: 100%;
@@ -37,9 +37,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.85rem;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.1),
-        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
     animation: panelIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -58,13 +56,13 @@
 .dc-icon-wrap {
     width: 54px;
     height: 54px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    background: var(--error-dim);
+    border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ef4444;
+    color: var(--error);
     margin-bottom: 0.25rem;
 }
 
@@ -77,19 +75,19 @@
     font-family: 'Outfit', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-primary);
     margin: 0;
 }
 
 .dc-message {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
     line-height: 1.6;
     margin: 0;
 }
 
 .dc-name {
-    color: #0f172a;
+    color: var(--text-primary);
     font-weight: 600;
 }
 

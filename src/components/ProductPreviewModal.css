@@ -23,8 +23,8 @@
 
 .main-image-wrap {
     aspect-ratio: 1;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--glass);
+    border: 1px solid var(--surface-border);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@
     cursor: pointer;
     overflow: hidden;
     flex-shrink: 0;
-    background: #f8fafc;
+    background: var(--glass);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,7 +79,7 @@
     display: block;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #64748b;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
@@ -99,7 +99,7 @@
 
 .desc-val {
     white-space: pre-line;
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 .info-grid-small {
@@ -109,7 +109,7 @@
 }
 
 .image-placeholderLarge {
-    color: #cbd5e1;
+    color: var(--text-muted);
     width: 60px;
     height: 60px;
 }

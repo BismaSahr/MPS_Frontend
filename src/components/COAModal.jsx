@@ -15,6 +15,8 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
         const newErrors = {};
         if (!form.batchId) newErrors.batchId = "Please select an associated batch";
         if (mode === "create" && !form.file) newErrors.file = "COA document file is required";
+        if (!form.labName?.trim()) newErrors.labName = "Lab name is required";
+        if (!form.purity?.trim()) newErrors.purity = "Purity is required";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -33,10 +35,12 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
             const file = files[0];
             setForm((p) => ({ ...p, file }));
             if (errors.file) setErrors(prev => ({ ...prev, file: "" }));
-
             if (file) {
+                // If image, show preview. If PDF, just show name.
                 if (file.type.startsWith("image/")) {
-                    setFilePreview(URL.createObjectURL(file));
+                    const reader = new FileReader();
+                    reader.onloadend = () => setFilePreview(reader.result);
+                    reader.readAsDataURL(file);
                 } else {
                     setFilePreview(null);
                 }
@@ -46,15 +50,6 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
             if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
         }
     };
-
-    // Clean up blob URLs to prevent memory leaks
-    useEffect(() => {
-        return () => {
-            if (filePreview && filePreview.startsWith("blob:")) {
-                URL.revokeObjectURL(filePreview);
-            }
-        };
-    }, [filePreview]);
 
     const handleBackdrop = (e) => {
         if (e.target === e.currentTarget) onClose();
@@ -114,28 +109,32 @@ const COAModal = ({ mode, form, setForm, batches, products, onClose, onSubmit, l
 
                             {/* Lab Name */}
                             <div className="form-field">
-                                <label className="form-label">Lab / Testing Agency</label>
+                                <label className="form-label">Lab / Testing Agency <span className="req">*</span></label>
                                 <input
                                     type="text"
                                     name="labName"
                                     value={form.labName}
                                     onChange={handleChange}
                                     placeholder="e.g. Eurofins Lab"
-                                    className="form-input"
+                                    className={`form-input ${errors.labName ? "form-input--error" : ""}`}
+                                    required
                                 />
+                                {errors.labName && <span className="error-text">{errors.labName}</span>}
                             </div>
 
                             {/* Purity */}
                             <div className="form-field">
-                                <label className="form-label">Purity Level</label>
+                                <label className="form-label">Purity Level <span className="req">*</span></label>
                                 <input
                                     type="text"
                                     name="purity"
                                     value={form.purity}
                                     onChange={handleChange}
                                     placeholder="e.g. 99.8%"
-                                    className="form-input"
+                                    className={`form-input ${errors.purity ? "form-input--error" : ""}`}
+                                    required
                                 />
+                                {errors.purity && <span className="error-text">{errors.purity}</span>}
                             </div>
 
                             {/* File Upload */}

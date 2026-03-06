@@ -15,7 +15,7 @@
 
 .preview-divider {
     border: 0;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--surface-border);
     margin: 0.5rem 0;
 }
 

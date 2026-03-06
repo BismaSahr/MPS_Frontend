@@ -15,45 +15,45 @@
 }
 
 .batch-status--ok {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #166534;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: var(--success);
 }
 
 .batch-status--soon {
-    background: #fffbeb;
-    border: 1px solid #fde68a;
-    color: #92400e;
+    background: rgba(234, 88, 12, 0.1);
+    border: 1px solid rgba(234, 88, 12, 0.2);
+    color: #fb923c;
 }
 
 .batch-status--expired {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
+    background: var(--error-dim);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--error);
 }
 
 .batch-status--none {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #64748b;
+    background: var(--glass);
+    border: 1px solid var(--surface-border);
+    color: var(--text-muted);
 }
 
 /* Expiry date coloring */
 .batch-date--expired {
-    color: #ef4444;
+    color: var(--error);
     font-weight: 700;
 }
 
 .batch-date--soon {
-    color: #ea580c;
+    color: #fb923c;
     font-weight: 700;
 }
 
 /* Stat value coloring */
 .batch-stat--warn {
-    color: #ea580c !important;
+    color: #fb923c !important;
 }
 
 .batch-stat--danger {
-    color: #ef4444 !important;
+    color: var(--error) !important;
 }

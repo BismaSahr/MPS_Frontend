@@ -9,8 +9,14 @@ const authHeader = () => {
     };
 };
 
-export const getQRCodes = () =>
-    axios.get(`${API_BASE}/api/qrcodes`, authHeader()).then((r) => r.data);
+export const getQRCodes = (page = 1, limit = 10, batchId = "") => {
+    let url = `${API_BASE}/api/qrcodes?page=${page}&limit=${limit}`;
+    if (batchId) url += `&batchId=${batchId}`;
+    return axios.get(url, authHeader()).then((r) => r.data);
+};
+
+export const getBatchQRCodes = (batchId, page = 1, limit = 10) =>
+    axios.get(`${API_BASE}/api/qrcodes/batch/${batchId}?page=${page}&limit=${limit}`, authHeader()).then((r) => r.data);
 
 export const getQRCode = (id) =>
     axios.get(`${API_BASE}/api/qrcodes/${id}`, authHeader()).then((r) => r.data);
