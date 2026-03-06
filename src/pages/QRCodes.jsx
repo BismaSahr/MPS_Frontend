@@ -113,7 +113,7 @@ const QRCodes = () => {
         setDeleting(true);
         try {
             await deleteQRCode(deleteTarget._id);
-            showToast("QR Code deleted.");
+            showToast("QR Code deleted.", "error");
             setDeleteTarget(null);
             loadData();
         } catch (err) {

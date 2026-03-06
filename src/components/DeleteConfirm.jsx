@@ -12,7 +12,7 @@ const DeleteConfirm = ({ productName, onCancel, onConfirm, loading }) => {
                         <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
                     </svg>
                 </div>
-                <h3 className="dc-title">Delete Product?</h3>
+                <h3 className="dc-title">Do you really want to delete?</h3>
                 <p className="dc-message">
                     This will permanently delete <span className="dc-name">"{productName}"</span>. This action cannot be undone.
                 </p>

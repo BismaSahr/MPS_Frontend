@@ -110,7 +110,7 @@ const COAs = () => {
         setDeleting(true);
         try {
             await deleteCOA(deleteTarget._id);
-            showToast("Document deleted.", "info");
+            showToast("Document deleted.", "error");
             setDeleteTarget(null);
             load();
         } catch {

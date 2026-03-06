@@ -110,7 +110,7 @@ const Batches = () => {
         setDeleting(true);
         try {
             await deleteBatch(deleteTarget._id);
-            showToast("Batch deleted.", "info");
+            showToast("Batch deleted.", "error");
             setDeleteTarget(null);
             load();
         } catch {

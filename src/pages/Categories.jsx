@@ -70,7 +70,7 @@ const Categories = () => {
         setDeleting(true);
         try {
             await deleteCategory(deleteTarget._id);
-            showToast("Category deleted.", "info");
+            showToast("Category deleted.", "error");
             setDeleteTarget(null);
             load();
         } catch {

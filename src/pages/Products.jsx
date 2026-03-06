@@ -129,7 +129,7 @@ const Products = () => {
         setDeleting(true);
         try {
             await deleteProduct(deleteTarget._id);
-            showToast("Product deleted.", "info");
+            showToast("Product deleted.", "error");
             setDeleteTarget(null);
             load();
         } catch {
