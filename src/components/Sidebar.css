@@ -187,9 +187,38 @@
     background: var(--error-dim);
 }
 
+.sidebar-close-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        display: none;
+        position: fixed;
+        left: -250px;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar--open {
+        transform: translateX(250px);
+    }
+
+    .sidebar-close-btn {
+        display: block;
+    }
+
+    .sidebar-logo {
+        justify-content: space-between;
+        align-items: center;
     }
 }

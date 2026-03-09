@@ -51,6 +51,28 @@
     flex-wrap: wrap;
 }
 
+.mobile-menu-btn {
+    display: none;
+    background: var(--glass);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mobile-menu-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+}
+
 @media (max-width: 560px) {
     .topbar {
         padding: 0.9rem 1rem;

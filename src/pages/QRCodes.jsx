@@ -109,19 +109,19 @@ const QRCodes = () => {
         }
     };
 
-    const handleDelete = async () => {
-        setDeleting(true);
-        try {
-            await deleteQRCode(deleteTarget._id);
-            showToast("QR Code deleted.", "error");
-            setDeleteTarget(null);
-            loadData();
-        } catch (err) {
-            showToast("Failed to delete QR.", "error");
-        } finally {
-            setDeleting(false);
-        }
-    };
+    // const handleDelete = async () => {
+    //     setDeleting(true);
+    //     try {
+    //         await deleteQRCode(deleteTarget._id);
+    //         showToast("QR Code deleted.", "error");
+    //         setDeleteTarget(null);
+    //         loadData();
+    //     } catch (err) {
+    //         showToast("Failed to delete QR.", "error");
+    //     } finally {
+    //         setDeleting(false);
+    //     }
+    // };
 
     const handleExport = async () => {
         if (!selectedBatchId) return showToast("Please filter by a batch first to export.", "error");

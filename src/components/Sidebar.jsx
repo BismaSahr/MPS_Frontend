@@ -76,14 +76,22 @@ const NAV_ITEMS = [
     },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
     const { logout, admin } = useAuth();
+    const navigate = useNavigate();
+
+    const handleNavClick = () => {
+        if (window.innerWidth <= 768) {
+            onClose?.();
+        }
+    };
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? "sidebar--open" : ""}`}>
             {/* Logo */}
             <div className="sidebar-logo">
                 <img src={logo} alt="Miami Pro Science" />
+                <button className="sidebar-close-btn" onClick={onClose}>&times;</button>
             </div>
 
             {/* Nav label */}
@@ -95,6 +103,7 @@ const Sidebar = () => {
                     <NavLink
                         key={to}
                         to={to}
+                        onClick={handleNavClick}
                         className={({ isActive }) =>
                             `sidebar-nav-item${isActive ? " sidebar-nav-item--active" : ""}`
                         }
@@ -116,7 +125,7 @@ const Sidebar = () => {
                         <span className="sidebar-user-role">{admin?.role || "admin"}</span>
                     </div>
                 </div>
-                <button className="sidebar-logout" onClick={logout} title="Sign out">
+                <button className="sidebar-logout" onClick={() => { logout(); onClose?.(); }} title="Sign out">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
                         <polyline points="16 17 21 12 16 7" />
