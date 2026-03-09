@@ -7,7 +7,7 @@ const PAGE_TITLES = {
     "/batches": { title: "Batches", subtitle: "Track production batches" },
 };
 
-const Topbar = ({ actions }) => {
+const Topbar = ({ actions, onMenuClick }) => {
     const { pathname } = useLocation();
     const meta = PAGE_TITLES[pathname] || { title: "Admin", subtitle: "" };
 
