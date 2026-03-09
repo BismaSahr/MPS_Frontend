@@ -21,6 +21,9 @@ const AdminLayout = ({ children, topbarActions }) => {
                     onMenuClick={() => setIsSidebarOpen(true)}
                 />
                 <main className="admin-content">{children}</main>
+                <footer className="admin-footer">
+                    <p>© Copyrights 2026 Miami Pro Science. All Rights Reserved.</p>
+                </footer>
             </div>
         </div>
     );
