@@ -25,7 +25,7 @@ const BatchPreviewModal = ({ batch, productName, onClose }) => {
                 <div className="modal-header">
                     <div className="modal-header-left">
                         <div className="modal-icon-wrap" style={{ background: '#fef3c7', color: '#d97706' }}>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                             </svg>
                         </div>

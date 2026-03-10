@@ -5,7 +5,7 @@ const DeleteConfirm = ({ productName, onCancel, onConfirm, loading }) => {
         <div className="dc-backdrop">
             <div className="dc-panel" role="alertdialog" aria-modal="true">
                 <div className="dc-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polyline points="3 6 5 6 21 6" />
                         <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
                         <path d="M10 11v6M14 11v6" />

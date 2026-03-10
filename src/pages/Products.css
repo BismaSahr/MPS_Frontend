@@ -443,15 +443,23 @@
 
     .pm-stat {
         padding: 1rem;
+        min-width: 120px;
     }
 
     .pm-stat-val {
         font-size: 1.5rem;
     }
+
+    .pm-stat-label {
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
 }
 
 @media (max-width: 480px) {
     .pm-stats-bar {
+        display: grid;
         grid-template-columns: 1fr;
     }
 }
